@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carl's Jr. — Fiestas y Pedidos Especiales | Punto Kuale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#0a0a0a; --ink-soft:#4a4a4a; --ink-faint:#8a8a8a;
+    --paper:#ffffff; --paper-soft:#fafafa;
+    --line:#e7e7e7; --line-soft:#f0f0f0;
+    --accent:#FBB712; --accent-soft:#fff6dd; --accent-text:#8a5c00;
+    --festive:#E4002B; --festive-soft:#fdeceb;
+    --radius:10px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Manrope',sans-serif; background:var(--paper); color:var(--ink); min-height:100vh; -webkit-font-smoothing:antialiased; }
+
+  /* ===== Brand stripe ===== */
+  .brand-stripe { height:6px; background:var(--accent); position:sticky; top:0; z-index:101; }
+
+  /* ===== Topbar ===== */
+  .topbar { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:16px 40px; border-bottom:1px solid var(--line); position:sticky; top:6px; background:rgba(255,255,255,0.92); backdrop-filter:blur(8px); z-index:100; }
+  .topbar-brand { font-weight:800; font-size:15px; letter-spacing:-0.01em; display:flex; align-items:center; gap:14px; }
+  .header-logo { height:30px; width:auto; display:block; }
+  .topbar-divider { width:1px; height:20px; background:var(--line); }
+  .topbar-suffix { font-size:12px; font-weight:700; color:var(--ink-faint); letter-spacing:0.2px; }
+  .topbar-right { display:flex; align-items:center; gap:14px; }
+  .brand-switch { font-size:12.5px; font-weight:700; color:var(--ink-soft); text-decoration:none; border-bottom:1.5px solid var(--line); padding-bottom:1px; }
+  .brand-switch:hover { color:var(--accent-text); border-color:var(--accent); }
+  .role-toggle { display:flex; background:var(--paper-soft); border:1.5px solid var(--line); border-radius:50px; padding:3px; }
+  .role-btn { border:none; background:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:11.5px; padding:6px 13px; border-radius:50px; cursor:pointer; color:var(--ink-faint); transition:all 0.15s; }
+  .role-btn.active { background:var(--accent); color:var(--ink); }
+  @media(max-width:640px){ .topbar{padding:14px 18px; flex-wrap:wrap; gap:10px;} .topbar-right{width:100%; justify-content:space-between;} .header-logo{height:24px;} }
+
+  /* ===== Hero ===== */
+  .hero-bg { width:100%; background:linear-gradient(180deg,var(--accent-soft) 0%,rgba(255,246,221,0) 65%); }
+  .hero { max-width:720px; margin:0 auto; padding:52px 32px 44px; text-align:center; }
+  .hero-logo-wrap { display:flex; align-items:center; justify-content:center; margin:0 auto 24px; }
+  .hero-logo { height:88px; width:auto; display:block; }
+  .hero h1 { font-weight:800; font-size:clamp(28px,4.2vw,40px); line-height:1.15; letter-spacing:-0.02em; color:var(--ink); }
+  .hero-rule { width:46px; height:4px; background:var(--accent); border-radius:3px; margin:24px auto; }
+  .hero p { font-size:15px; color:var(--ink-soft); line-height:1.65; max-width:480px; margin:0 auto; font-weight:500; }
+  .hero-branches { margin-top:26px; font-size:12px; color:var(--ink-faint); font-weight:600; }
+  .hero-branches b { color:var(--ink-soft); }
+
+  .container { max-width:720px; margin:0 auto; padding:0 32px 100px; }
+
+  /* ===== Tabs ===== */
+  .tabs-bar { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:36px; }
+  .tab-btn { text-align:center; background:var(--paper-soft); border:1.5px solid var(--line); border-radius:12px; padding:13px 10px; font-family:'Manrope',sans-serif; font-weight:700; font-size:13px; color:var(--ink-soft); cursor:pointer; transition:all 0.18s; }
+  .tab-btn:hover { border-color:var(--accent); color:var(--ink); }
+  .tab-btn.active { background:var(--accent); border-color:var(--accent); color:var(--ink); box-shadow:0 4px 14px -6px rgba(251,183,18,0.6); }
+  @media(max-width:560px){ .tabs-bar{grid-template-columns:1fr; gap:8px;} }
+
+  /* ===== Step segmented control ===== */
+  .step-bar { display:flex; border:1.5px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:28px; }
+  .step-btn { flex:1; text-align:center; background:var(--paper-soft); border:none; padding:14px 8px; font-family:'Manrope',sans-serif; font-weight:700; font-size:12.5px; color:var(--ink-faint); cursor:pointer; transition:all 0.15s; border-right:1.5px solid var(--line); }
+  .step-btn:last-child { border-right:none; }
+  .step-btn.active { background:var(--accent-soft); color:var(--accent-text); box-shadow:inset 0 -3px 0 var(--accent); }
+  .step-btn .step-num { display:block; font-size:10px; font-weight:800; letter-spacing:0.5px; margin-bottom:3px; color:var(--ink-faint); opacity:0.85; }
+  .step-btn.active .step-num { color:var(--festive); opacity:1; }
+  .step-panel { display:none; } .step-panel.active { display:block; }
+
+  /* ===== Card / form ===== */
+  .card { position:relative; background:var(--paper); padding:0; animation:fadeUp 0.25s ease both; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .card-reaction { position:absolute; top:-18px; right:22px; width:42px; height:42px; background:var(--paper); border:1.5px solid var(--line); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:21px; box-shadow:0 4px 10px rgba(0,0,0,0.12); z-index:5; }
+  @media(max-width:560px){ .card-reaction{ top:-16px; right:14px; width:38px; height:38px; font-size:19px; } }
+  .card-title { font-weight:800; font-size:21px; letter-spacing:-0.01em; color:var(--ink); margin-bottom:8px; }
+  .card-desc { font-size:14px; color:var(--ink-soft); line-height:1.6; margin-bottom:26px; font-weight:500; }
+
+  .field-group { margin-bottom:20px; }
+  .field-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .field-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  .field-label { display:block; font-size:11.5px; font-weight:700; color:var(--ink); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:8px; }
+  .field-label .opt { text-transform:none; color:var(--ink-faint); font-weight:500; letter-spacing:0; }
+  .field-input { width:100%; padding:13px 14px; border:1.5px solid var(--line); border-radius:8px; font-family:'Manrope',sans-serif; font-size:14px; font-weight:500; color:var(--ink); transition:border-color 0.15s; background:var(--paper-soft); }
+  .field-input::placeholder { color:var(--ink-faint); font-weight:500; }
+  .field-input:focus { outline:none; border-color:var(--accent); background:var(--paper); box-shadow:0 0 0 3px var(--accent-soft); }
+  textarea.field-input { resize:vertical; min-height:88px; }
+  select.field-input { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%238a8a8a' d='M0 0l6 8 6-8z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 16px center; padding-right:36px; }
+
+  .file-field { display:flex; align-items:center; border:1.5px dashed var(--line); border-radius:8px; overflow:hidden; background:var(--paper-soft); cursor:pointer; transition:border-color 0.15s; }
+  .file-field:hover { border-color:var(--accent); }
+  .file-field-btn { background:var(--ink); color:white; font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; padding:12px 16px; white-space:nowrap; }
+  .file-field-name { padding:12px 14px; font-size:13px; color:var(--ink-faint); font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+  .file-field input[type=file] { display:none; }
+
+  .btn-primary { width:100%; padding:16px; background:var(--accent); color:var(--ink); border:none; border-radius:8px; font-family:'Manrope',sans-serif; font-weight:800; font-size:14.5px; letter-spacing:0.2px; cursor:pointer; transition:all 0.18s; margin-top:6px; box-shadow:0 6px 16px -8px rgba(251,183,18,0.7); }
+  .btn-primary:hover { background:var(--ink); color:white; box-shadow:none; }
+  .btn-secondary { width:100%; padding:14px; background:transparent; color:var(--ink); border:1.5px solid var(--line); border-radius:8px; font-family:'Manrope',sans-serif; font-weight:700; font-size:13.5px; cursor:pointer; transition:all 0.18s; }
+  .btn-secondary:hover { border-color:var(--ink); }
+
+  .notice { background:var(--paper-soft); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:14px 18px; margin:0 0 26px; font-size:12.5px; color:var(--ink-soft); font-weight:600; line-height:1.55; }
+  .notice-list { margin:0 0 26px; padding:14px 18px; background:var(--paper-soft); border:1px solid var(--line); border-radius:8px; }
+  .notice-list-title { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-faint); margin-bottom:8px; }
+  .notice-list ul { list-style:none; display:flex; flex-direction:column; gap:6px; }
+  .notice-list li { font-size:12.5px; color:var(--ink-soft); font-weight:600; padding-left:16px; position:relative; }
+  .notice-list li::before { content:'—'; position:absolute; left:0; color:var(--ink-faint); }
+
+  .success-toast { display:none; align-items:flex-start; gap:10px; background:var(--paper-soft); border:1px solid var(--line); border-radius:8px; padding:14px 18px; margin-top:18px; font-size:13px; color:var(--ink); font-weight:700; line-height:1.5; }
+  .success-toast .st-icon { width:22px; height:22px; border-radius:50%; background:var(--ink); border:2px solid var(--accent); color:white; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0; margin-top:1px; }
+  .success-toast .st-folio { display:block; font-weight:800; color:var(--accent-text); margin-top:4px; font-size:13.5px; }
+  .success-toast .st-note { display:block; font-weight:500; color:var(--ink-soft); margin-top:4px; font-size:12px; }
+
+  .divider { height:1px; background:var(--line); margin:0 0 28px; }
+  .page { display:none; } .page.active { display:block; }
+
+  .checkbox-row { display:flex; align-items:flex-start; gap:10px; margin-bottom:24px; }
+  .checkbox-row input { margin-top:3px; flex-shrink:0; width:16px; height:16px; accent-color:var(--accent); }
+  .checkbox-row label { font-size:12.5px; color:var(--ink-soft); font-weight:600; line-height:1.55; }
+  .checkbox-row a { color:var(--accent-text); font-weight:700; text-decoration:none; }
+  .checkbox-row a:hover { text-decoration:underline; }
+
+  /* ===== Estatus de políticas (abre modal de lectura obligatoria) ===== */
+  .policy-status { display:flex; align-items:center; gap:14px; border:1.5px solid var(--line); border-radius:10px; padding:14px 16px; margin-bottom:24px; background:var(--paper-soft); }
+  .policy-status.done { border-color:#1f9d55; background:#f2fbf6; }
+  .policy-status-icon { width:34px; height:34px; border-radius:50%; background:var(--paper); border:1.5px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+  .policy-status.done .policy-status-icon { background:#1f9d55; border-color:#1f9d55; color:white; }
+  .policy-status-body { flex:1; min-width:0; }
+  .policy-status-title { font-size:13px; font-weight:800; color:var(--ink); }
+  .policy-status-text { font-size:12px; color:var(--ink-soft); font-weight:600; margin-top:2px; line-height:1.5; }
+  .policy-status button { flex-shrink:0; width:auto; padding:10px 16px; margin-top:0; }
+  @media(max-width:480px){ .policy-status{ flex-wrap:wrap; } .policy-status button{ width:100%; } }
+
+  /* ===== Modal de políticas (lectura obligatoria con scroll) ===== */
+  .policy-modal { display:flex; flex-direction:column; padding:0 !important; max-width:600px; max-height:88vh; }
+  .policy-modal-head { padding:24px 28px 16px; border-bottom:1px solid var(--line); flex-shrink:0; }
+  .policy-scroll { overflow-y:auto; padding:20px 28px; font-size:13px; line-height:1.75; color:var(--ink-soft); }
+  .policy-scroll p.policy-intro { margin-bottom:16px; font-weight:600; color:var(--ink); }
+  .policy-scroll ul { list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .policy-scroll li { position:relative; padding-left:20px; }
+  .policy-scroll li::before { content:'★'; position:absolute; left:0; top:1px; color:var(--accent); font-size:11px; }
+  .policy-scroll-end { margin-top:22px; padding-top:16px; border-top:1px dashed var(--line); font-size:11.5px; color:var(--ink-faint); font-weight:700; text-align:center; }
+  .policy-modal-foot { padding:18px 28px; border-top:1px solid var(--line); flex-shrink:0; }
+  .policy-checkbox-row { margin-bottom:14px; }
+  .policy-checkbox-row input:disabled { cursor:not-allowed; opacity:0.5; }
+  .policy-checkbox-row label.locked { color:var(--ink-faint); }
+  .btn-primary:disabled { opacity:0.4; cursor:not-allowed; background:var(--line); color:var(--ink-faint); box-shadow:none; }
+  .btn-primary:disabled:hover { background:var(--line); color:var(--ink-faint); }
+
+  /* ===== Disponibilidad widget ===== */
+  .avail-wrap { margin-bottom:26px; }
+  .avail-list { display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+  .avail-item { display:flex; align-items:center; justify-content:space-between; border:1.5px solid var(--line); border-radius:8px; padding:12px 14px; background:var(--paper-soft); }
+  .avail-date { font-size:13.5px; font-weight:700; color:var(--ink); }
+  .avail-date span { display:block; font-size:11px; font-weight:600; color:var(--ink-faint); margin-top:1px; }
+  .avail-chip { font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.4px; padding:6px 12px; border-radius:50px; }
+  .avail-chip.libre { background:var(--paper); border:1.5px solid #1f9d55; color:#1f9d55; }
+  .avail-chip.ocupada { background:var(--paper); border:1.5px solid var(--ink-faint); color:var(--ink-faint); }
+  .avail-hint { font-size:12px; color:var(--ink-faint); font-weight:600; margin-top:10px; }
+
+  /* ===== Pago flujo (anticipo) ===== */
+  .pago-hint { font-size:12.5px; color:var(--ink-faint); font-weight:600; text-align:center; padding:6px 0 16px; }
+  .ecommerce-card { border:1.5px solid var(--line); border-radius:14px; padding:28px 24px; text-align:center; background:var(--paper-soft); margin-bottom:24px; }
+  .ecommerce-card-icon { width:46px; height:46px; border-radius:50%; background:var(--accent-soft); display:flex; align-items:center; justify-content:center; font-size:20px; margin:0 auto 14px; }
+  .ecommerce-card-title { font-weight:800; font-size:16px; margin-bottom:8px; }
+  .ecommerce-card-text { font-size:13px; color:var(--ink-soft); line-height:1.6; margin-bottom:18px; font-weight:500; }
+  .amount-box { display:flex; align-items:center; justify-content:space-between; background:var(--ink); border-radius:8px; padding:15px 18px; margin-bottom:20px; }
+  .amount-box .a-label { font-size:12px; font-weight:700; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:0.6px; }
+  .amount-box .a-amount { font-size:19px; font-weight:800; color:white; }
+
+  /* ===== Segmented pill (tipo de pago) ===== */
+  .pill-group { display:flex; gap:8px; margin-bottom:22px; }
+  .pill-btn { flex:1; text-align:center; padding:12px 10px; border:1.5px solid var(--line); border-radius:8px; background:var(--paper-soft); font-family:'Manrope',sans-serif; font-weight:700; font-size:13px; color:var(--ink-soft); cursor:pointer; transition:all 0.15s; }
+  .pill-btn:hover { border-color:var(--accent); }
+  .pill-btn.selected { background:var(--ink); border-color:var(--ink); color:white; }
+
+  /* ===== Seguimiento (dashboard) ===== */
+  .track-search { display:flex; gap:10px; margin-bottom:8px; }
+  .track-search .field-input { flex:1; }
+  .track-search button { flex-shrink:0; padding:0 22px; background:var(--ink); color:white; border:none; border-radius:8px; font-family:'Manrope',sans-serif; font-weight:700; font-size:13.5px; cursor:pointer; transition:background 0.18s; }
+  .track-search button:hover { background:var(--accent); color:var(--ink); }
+  .track-example { display:block; text-align:center; font-size:12px; font-weight:700; color:var(--ink-faint); background:none; border:none; margin:14px auto 30px; cursor:pointer; text-decoration:underline; }
+  .track-example:hover { color:var(--accent-text); }
+
+  .dash-list { display:none; flex-direction:column; gap:10px; }
+  .dash-list.active { display:flex; }
+  .dash-item { display:flex; align-items:center; justify-content:space-between; gap:16px; border:1.5px solid var(--line); border-radius:12px; padding:16px 18px; background:var(--paper); }
+  .dash-item-left { display:flex; align-items:center; gap:16px; min-width:0; flex:1; }
+  .dash-tag { flex-shrink:0; width:82px; text-align:center; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-faint); border:1px solid var(--line); border-radius:6px; padding:6px 4px; }
+  .dash-item-text { min-width:0; }
+  .dash-item-title { font-size:14px; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .dash-item-meta { font-size:12px; color:var(--ink-faint); font-weight:600; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  .status-badge { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; width:auto; min-width:150px; max-width:100%; font-size:10.5px; font-weight:800; padding:7px 14px; border-radius:50px; text-transform:uppercase; letter-spacing:0.4px; white-space:normal; line-height:1.35; text-align:center; }
+  .status-informes { background:var(--paper-soft); border:1px solid var(--line); color:var(--ink-soft); }
+  .status-contrato { background:var(--accent-soft); border:1px solid var(--accent); color:var(--accent-text); }
+  .status-anticipo { background:var(--accent); color:var(--ink); }
+  .status-invitaciones { background:var(--accent-soft); border:1px solid var(--accent); color:var(--accent-text); }
+  .status-bitacora { background:#fff4e0; border:1px solid #c98a1c; color:#c98a1c; }
+  .status-confirmada { background:var(--ink); color:white; }
+  .status-evento { background:var(--ink); color:white; }
+  .status-cierre { background:#5b4636; color:white; }
+  .status-entregada { background:#1f9d55; color:white; }
+  .status-encuesta-pend { background:var(--paper-soft); border:1.5px dashed var(--ink-faint); color:var(--ink-faint); }
+  .status-encuesta-ok { background:#1f9d55; color:white; }
+  .status-archivado { background:var(--paper-soft); border:1px solid var(--line); color:var(--ink-faint); }
+  .status-cancelada { background:var(--paper-soft); border:1px solid var(--line); color:var(--ink-faint); }
+
+  /* ===== Vista previa de contrato ===== */
+  .contract-preview { display:none; border:1.5px solid var(--line); border-radius:10px; padding:20px 22px; margin:0 0 24px; background:var(--paper-soft); font-size:12.5px; line-height:1.9; color:var(--ink-soft); }
+  .contract-preview.active { display:block; }
+  .contract-preview b { color:var(--ink); }
+  .contract-preview .cp-title { font-weight:800; font-size:13px; color:var(--ink); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.4px; }
+
+  /* ===== Checklist interno (bitácora) ===== */
+  .check-stage { display:flex; align-items:center; gap:10px; padding:11px 4px; border-bottom:1px solid var(--line-soft); cursor:pointer; }
+  .check-stage:last-child { border-bottom:none; }
+  .check-stage input { width:17px; height:17px; accent-color:var(--accent); flex-shrink:0; }
+  .check-stage span { font-size:13px; font-weight:600; color:var(--ink-soft); }
+  .check-stage input:checked ~ span { color:var(--ink); text-decoration:line-through; text-decoration-color:var(--line); }
+  .role-locked { text-align:center; padding:48px 20px; }
+  .role-locked-icon { width:44px; height:44px; border-radius:50%; background:var(--paper-soft); border:1.5px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:18px; margin:0 auto 14px; }
+  .role-locked p { font-size:13.5px; color:var(--ink-soft); font-weight:600; max-width:340px; margin:0 auto; line-height:1.6; }
+
+  /* ===== Encuesta de satisfacción (modal) ===== */
+  .survey-overlay { display:none; position:fixed; inset:0; background:rgba(10,10,10,0.55); z-index:200; align-items:center; justify-content:center; padding:20px; }
+  .survey-overlay.active { display:flex; }
+  .survey-modal { background:var(--paper); border-radius:16px; max-width:560px; width:100%; max-height:90vh; overflow-y:auto; padding:34px 28px 28px; position:relative; box-shadow:0 30px 60px -20px rgba(0,0,0,0.35); animation:fadeUp 0.2s ease both; }
+  .survey-close { position:absolute; top:16px; right:16px; width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper-soft); font-size:15px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--ink-soft); }
+  .survey-close:hover { border-color:var(--accent); color:var(--ink); }
+  .survey-header { text-align:center; margin-bottom:26px; }
+  .survey-header-icon { height:96px; width:auto; margin:0 auto 14px; display:block; }
+  .survey-title { font-weight:800; font-size:18px; letter-spacing:-0.01em; margin-bottom:6px; }
+  .survey-subtitle { font-size:12.5px; color:var(--ink-soft); font-weight:600; line-height:1.55; max-width:420px; margin:0 auto; }
+
+  .rating-group { margin-bottom:22px; }
+  .rating-title { font-size:12.5px; font-weight:700; color:var(--ink); margin-bottom:10px; }
+  .rating-options { display:flex; gap:6px; flex-wrap:wrap; }
+  .rating-option { flex:1; min-width:64px; }
+  .rating-option input { position:absolute; opacity:0; pointer-events:none; }
+  .rating-option span { display:block; text-align:center; padding:9px 4px; border:1.5px solid var(--line); border-radius:8px; font-size:11px; font-weight:700; color:var(--ink-soft); cursor:pointer; transition:all 0.15s; background:var(--paper-soft); }
+  .rating-option span:hover { border-color:var(--accent); }
+  .rating-option input:checked + span { background:var(--accent); border-color:var(--accent); color:var(--ink); }
+  @media(max-width:480px){ .rating-options{ display:grid; grid-template-columns:repeat(3,1fr); } }
+
+  .survey-success { display:none; text-align:center; padding:20px 0 6px; }
+  .survey-success-icon { height:64px; width:auto; display:block; margin:0 auto 18px; }
+  .survey-success h3 { font-weight:800; font-size:17px; margin-bottom:8px; }
+  .survey-success p { font-size:13px; color:var(--ink-soft); font-weight:500; line-height:1.6; max-width:360px; margin:0 auto 22px; }
+
+  .confirm-summary { text-align:left; background:var(--paper-soft); border:1px solid var(--line); border-radius:10px; padding:6px 18px; margin:0 0 22px; }
+  .confirm-summary .cs-row { display:flex; justify-content:space-between; align-items:baseline; gap:14px; padding:9px 0; font-size:12.5px; border-bottom:1px solid var(--line-soft); }
+  .confirm-summary .cs-row:last-child { border-bottom:none; }
+  .confirm-summary .cs-label { color:var(--ink-faint); font-weight:700; flex-shrink:0; }
+  .confirm-summary .cs-value { color:var(--ink); font-weight:700; text-align:right; }
+
+  @media(max-width:560px){
+    .field-row, .field-row-3 { grid-template-columns:1fr; }
+    .hero{padding:40px 24px 32px} .container{padding:0 24px 80px}
+    .hero-logo-wrap{margin-bottom:18px;} .hero-logo{height:52px;}
+    .dash-item{padding:14px 16px; flex-direction:column; align-items:flex-start; gap:12px;}
+    .dash-item-left{width:100%;}
+    .status-badge{align-self:flex-start;}
+    .pill-group{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<div class="brand-stripe"></div>
+<nav class="topbar">
+  <div class="topbar-brand">
+    <img src="CJr_Logo_Horizontal_Negro.png" alt="Carl's Jr." class="header-logo">
+    <span class="topbar-divider"></span>
+    <span class="topbar-suffix">Punto Kuale</span>
+  </div>
+  <div class="topbar-right">
+    <div class="role-toggle">
+      <button class="role-btn active" id="role-invitado" type="button" onclick="setRole('invitado')">Invitado</button>
+      <button class="role-btn" id="role-guia" type="button" onclick="setRole('guia')">Guía de tienda</button>
+    </div>
+    <a class="brand-switch" href="dairy-queen-pedidos-especiales.html">Ir a Dairy Queen →</a>
+  </div>
+</nav>
+
+<div class="hero-bg">
+  <div class="hero">
+    <div class="hero-logo-wrap">
+      <img src="CJr_Logo_Horizontal_Negro.png" alt="Carl's Jr." class="hero-logo">
+    </div>
+    <h1>Celebra la mejor fiesta</h1>
+    <div class="hero-rule"></div>
+    <p>Reserva tu fiesta infantil o levanta un pedido especial de hamburguesas (individuales o en combo) en cualquier sucursal participante de Carl's Jr.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TABS -->
+  <div class="tabs-bar">
+    <button class="tab-btn active" id="tabbtn-1" onclick="showTab(1)">Fiestas infantiles</button>
+    <button class="tab-btn" id="tabbtn-2" onclick="showTab(2)">Pedidos especiales</button>
+    <button class="tab-btn" id="tabbtn-3" onclick="showTab(3)">Seguimiento de solicitud</button>
+    <button class="tab-btn" id="tabbtn-4" onclick="showTab(4)">Bitácora <span class="opt" style="text-transform:none;">(uso interno)</span></button>
+  </div>
+
+  <!-- ===================== TAB 1: FIESTAS INFANTILES ===================== -->
+  <div class="page active" id="page-1">
+
+    <div class="step-bar">
+      <button class="step-btn active" id="stepbtn-1" type="button" onclick="showStep(1)"><span class="step-num">PASO 1</span>Solicitar informes</button>
+      <button class="step-btn" id="stepbtn-2" type="button" onclick="showStep(2)"><span class="step-num">PASO 2</span>Confirmar con anticipo</button>
+    </div>
+
+    <!-- PASO 1: Solicitar informes (HU-FI-01) -->
+    <div class="step-panel active" id="step-1">
+      <form class="card" onsubmit="return handleSubmitInformes(event)">
+        <span class="card-reaction">🎉</span>
+        <div class="card-title">Solicitud de informes</div>
+        <p class="card-desc">Captura los datos generales del evento. Este paso <b>no genera cuenta de venta</b> — es solo un estimado para cotizar la fiesta.</p>
+
+        <div class="notice" id="guia-hint-1">Aplica si el invitado llega directamente a tienda o solicita informes por teléfono. La guía puede completar este formulario en su nombre.</div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Sucursal *</label>
+            <select class="field-input" required>
+              <option value="">Selecciona una sucursal</option>
+              <option>Hidalgo</option><option>Norte</option><option>Universidad</option><option>Victoria</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Fecha deseada del evento *</label>
+            <input class="field-input" type="date" required>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Horario *</label>
+            <select class="field-input" id="informes-horario" required>
+              <option value="">Selecciona un horario</option>
+              <option>Matutino (11:00–14:00)</option><option>Vespertino (15:00–18:00)</option><option>Nocturno (18:30–21:00)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Costo aproximado <span class="opt">(estimado)</span></label>
+            <input class="field-input" type="text" placeholder="Ej. $4,500 MXN">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Niños *</label>
+            <input class="field-input" type="number" min="1" id="informes-ninos" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Adultos *</label>
+            <input class="field-input" type="number" min="0" id="informes-adultos" required>
+          </div>
+        </div>
+        <p class="avail-hint" style="margin:-10px 0 20px;">Mínimo 20 combos entre niños y adultos.</p>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Nombre del festejado(a) *</label>
+            <input class="field-input" type="text" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Edad del festejado(a) *</label>
+            <input class="field-input" type="number" min="0" required>
+          </div>
+        </div>
+        <p class="avail-hint" style="margin:-10px 0 20px;">Se usa para el recibo de anticipo, la bitácora y la lona del día del evento.</p>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Nombre de contacto *</label>
+            <input class="field-input" type="text" id="informes-nombre" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Teléfono de contacto *</label>
+            <input class="field-input" type="tel" required>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Email <span class="opt">(opcional)</span></label>
+          <input class="field-input" type="email">
+        </div>
+
+        <button class="btn-primary" type="submit">Enviar solicitud de informes</button>
+        <div class="success-toast" id="toast-informes">
+          <span class="st-icon">✓</span>
+          <span>Solicitud de informes registrada.<span class="st-folio" id="ref-informes"></span><span class="st-note">Aún no se aparta la fecha — pasa al Paso 2 cuando el invitado confirme con anticipo.</span></span>
+        </div>
+      </form>
+    </div>
+
+    <!-- PASO 2: Confirmar con anticipo (HU-FI-02, HU-FI-03, HU-FI-04, HU-FI-05) -->
+    <div class="step-panel" id="step-2">
+      <form class="card" onsubmit="return handleSubmitAnticipo(event)">
+        <span class="card-reaction">🎉</span>
+        <div class="card-title">Confirmar reservación</div>
+        <p class="card-desc">La fecha solo queda apartada en el calendario cuando existe un anticipo vinculado a un folio de fiesta.</p>
+
+        <div class="field-group">
+          <label class="field-label">Sucursal *</label>
+          <select class="field-input" id="avail-sucursal" onchange="renderAvailability()" required>
+            <option value="">Selecciona una sucursal</option>
+            <option>Hidalgo</option><option>Norte</option><option>Universidad</option><option>Victoria</option>
+          </select>
+        </div>
+
+        <div class="avail-wrap">
+          <label class="field-label">Disponibilidad — Sala de fiestas</label>
+          <div class="avail-list" id="avail-list">
+            <p class="avail-hint">Elige una sucursal para ver las próximas fechas disponibles.</p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Fecha a confirmar *</label>
+            <input class="field-input" type="date" id="cp-fecha-input" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Número de referencia del Paso 1 <span class="opt">(si aplica)</span></label>
+            <input class="field-input" type="text" placeholder="Ej. REF-0042">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Correo electrónico *</label>
+          <input class="field-input" type="email" id="cp-correo" placeholder="correo@ejemplo.com" required>
+        </div>
+
+        <div class="amount-box">
+          <span class="a-label">Anticipo requerido</span>
+          <span class="a-amount">$500 MXN</span>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Forma de pago del anticipo *</label>
+          <select class="field-input" id="forma-pago-fiesta" onchange="togglePagoFiesta(this.value)" required>
+            <option value="">Selecciona</option>
+            <option>Transferencia</option><option>Liga de pago</option><option>Efectivo</option>
+          </select>
+        </div>
+
+        <p class="pago-hint" id="pago-hint-fiesta">Elige la forma de pago para continuar.</p>
+
+        <div class="ecommerce-card" id="fiesta-ecommerce-flow" style="display:none">
+          <div class="ecommerce-card-icon">💳</div>
+          <div class="ecommerce-card-title">Pago en línea</div>
+          <p class="ecommerce-card-text">El anticipo se procesa mediante liga de pago o transferencia. Al confirmar el pago, el sistema genera el folio y ata la reservación.</p>
+        </div>
+
+        <div id="fiesta-efectivo-flow" style="display:none">
+          <div class="notice">El efectivo debe quedar completamente identificado y justificado por folio de fiesta — no se mezcla con la venta del día.</div>
+          <div class="field-group">
+            <label class="field-label">Guía que recibe el efectivo *</label>
+            <input class="field-input" type="text" id="guia-efectivo" placeholder="Nombre de la guía">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Mesas a reservar *</label>
+            <input class="field-input" type="number" min="1" id="cp-mesas" placeholder="Ej. 5">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Costo total del servicio *</label>
+            <input class="field-input" type="text" id="cp-costo" placeholder="Ej. $4,800 MXN">
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Qué incluye el paquete *</label>
+          <textarea class="field-input" id="cp-incluye" placeholder="Ej. 20 combos infantiles, área decorada, refill de refresco, etc."></textarea>
+        </div>
+
+        <button type="button" class="btn-secondary" style="margin-bottom:24px;" onclick="previewContract()">Vista previa del contrato →</button>
+        <div class="contract-preview" id="contract-preview">
+          <div class="cp-title">Contrato de fiesta — vista previa</div>
+          <div>Consumidor: <b id="cp-nombre">—</b> · Sucursal: <b id="cp-sucursal">—</b></div>
+          <div>Niños: <b id="cp-ninos">—</b> · Adultos: <b id="cp-adultos">—</b> · Mesas: <b id="cp-mesas-out">—</b></div>
+          <div>Fecha: <b id="cp-fecha">—</b> · Horario: <b id="cp-horario">—</b></div>
+          <div>Costo total: <b id="cp-costo-out">—</b> · Anticipo: <b>$500 MXN</b></div>
+          <div>Incluye: <b id="cp-incluye-out">—</b></div>
+          <p class="avail-hint" style="margin-top:10px;">Estos datos llenan automáticamente las cláusulas del contrato en PDF, que se firma digitalmente aquí mismo en el portal.</p>
+        </div>
+
+        <div class="notice-list">
+          <div class="notice-list-title">Documentos del proceso — se generan o llenan en estos momentos</div>
+          <ul>
+            <li>Contrato de fiesta + aviso legal — se pre-llena aquí con estos datos y se firma digitalmente en el portal</li>
+            <li>Recibo de anticipo (folio) — se genera automáticamente al confirmar abajo, con el mismo consecutivo</li>
+            <li>Bitácora de fiesta — se llena en la pestaña "Bitácora" cuando se firme el contrato, no el día del evento</li>
+            <li>Políticas de fiesta infantil — aceptación digital (checkbox abajo)</li>
+            <li>Encuesta de satisfacción — se ofrece en tablet al cierre de cuenta; si no se contesta, se envía un recordatorio automático 24 h después</li>
+          </ul>
+        </div>
+
+        <div class="policy-status" id="policy-status-pending">
+          <span class="policy-status-icon">📄</span>
+          <div class="policy-status-body">
+            <div class="policy-status-title">Políticas de fiestas infantiles — lectura obligatoria</div>
+            <div class="policy-status-text">Debes leer el documento completo y marcarlo como leído antes de poder confirmar la reservación.</div>
+          </div>
+          <button type="button" class="btn-secondary" onclick="openPolicyModal()">Leer políticas →</button>
+        </div>
+        <div class="policy-status done" id="policy-status-done" style="display:none;">
+          <span class="policy-status-icon">✓</span>
+          <div class="policy-status-body">
+            <div class="policy-status-title">Políticas leídas y aceptadas</div>
+            <div class="policy-status-text">El contrato y el aviso legal se firman digitalmente al confirmar la reservación.</div>
+          </div>
+          <button type="button" class="btn-secondary" onclick="openPolicyModal()">Ver de nuevo</button>
+        </div>
+        <input type="checkbox" id="accept-policy" style="position:absolute; opacity:0; width:0; height:0; pointer-events:none;" tabindex="-1" aria-hidden="true">
+
+        <button class="btn-primary" type="submit">Confirmar reservación y generar folio</button>
+        <div class="success-toast" id="toast-anticipo">
+          <span class="st-icon">✓</span>
+          <span>Reservación confirmada.<span class="st-folio" id="folio-fiesta"></span><span class="st-note">La fecha queda apartada. El total del día del evento sumará este anticipo + la venta del día.</span></span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== TAB 2: PEDIDOS ESPECIALES ===================== -->
+  <div class="page" id="page-2">
+    <form class="card" onsubmit="return handleSubmitPedido(event)">
+      <span class="card-reaction">🍔</span>
+      <div class="card-title">Pedido especial</div>
+      <p class="card-desc">Hamburguesas individuales o en combo para pedidos especiales. El descuento de inventario/costo se aplica hasta la fecha real de entrega, no en la fecha de pago.</p>
+
+      <div class="pill-group">
+        <button type="button" class="pill-btn selected" id="pago-total-btn" onclick="setTipoPago('total')">Pago total</button>
+        <button type="button" class="pill-btn" id="pago-anticipo-btn" onclick="setTipoPago('anticipo')">Anticipo</button>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Sucursal *</label>
+          <select class="field-input" id="pedido-sucursal" required>
+            <option value="">Selecciona una sucursal</option>
+            <option>Hidalgo</option><option>Norte</option><option>Universidad</option><option>Victoria</option><option>Altama</option><option>Centro</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Tipo de pedido *</label>
+          <select class="field-input" id="pedido-tipo" required>
+            <option value="">Selecciona</option>
+            <option>Hamburguesas individuales</option><option>Combo de hamburguesas</option><option>Otro pedido especial</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Descripción del pedido *</label>
+        <textarea class="field-input" id="pedido-descripcion" required placeholder="Tipo de hamburguesa(s), cantidad de combos, extras o modificaciones, etc."></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Cantidad *</label>
+          <input class="field-input" type="number" min="1" id="pedido-cantidad" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Fecha de entrega estimada *</label>
+          <input class="field-input" type="date" id="pedido-fecha-entrega" required>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Nombre de contacto *</label>
+          <input class="field-input" type="text" id="pedido-nombre" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Teléfono de contacto *</label>
+          <input class="field-input" type="tel" id="pedido-telefono" required>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Correo electrónico *</label>
+        <input class="field-input" type="email" id="pedido-correo" placeholder="correo@ejemplo.com" required>
+      </div>
+
+      <!-- FLUJO PAGO TOTAL -->
+      <div id="pedido-total-flow">
+        <div class="notice">Se marca en POS y genera ticket de inmediato.</div>
+        <div class="field-group">
+          <label class="field-label">Subir ticket <span class="opt">(al completar el pago, opcional en esta etapa)</span></label>
+          <label class="file-field">
+            <span class="file-field-btn">Elegir archivo</span>
+            <span class="file-field-name" data-default="Ningún archivo seleccionado">Ningún archivo seleccionado</span>
+            <input type="file" onchange="updateFileName(this)">
+          </label>
+        </div>
+      </div>
+
+      <!-- FLUJO ANTICIPO -->
+      <div id="pedido-anticipo-flow" style="display:none">
+        <div class="notice">No se genera ticket hasta completar el pago restante.</div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Monto del anticipo *</label>
+            <input class="field-input" type="number" min="1" id="pedido-anticipo-monto" placeholder="$">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Forma de pago *</label>
+            <select class="field-input" id="pedido-forma-pago">
+              <option value="">Selecciona</option>
+              <option>Transferencia</option><option>Liga de pago</option><option>Efectivo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" type="submit">Enviar pedido</button>
+      <div class="success-toast" id="toast-pedido">
+        <span class="st-icon">✓</span>
+        <span>Pedido registrado.<span class="st-folio" id="folio-pedido"></span><span class="st-note">El costo/inventario se descuenta hasta la fecha de entrega capturada, no en la fecha de pago.</span></span>
+      </div>
+    </form>
+  </div>
+
+  <!-- ===================== TAB 3: SEGUIMIENTO ===================== -->
+  <div class="page" id="page-3">
+    <div class="card">
+      <div class="card-title">Seguimiento de solicitud</div>
+      <p class="card-desc">Consulta el estado de una fiesta o pedido especial por número de folio o teléfono de contacto.</p>
+
+      <form class="track-search" onsubmit="return handleTrackSearch(event)">
+        <input class="field-input" type="text" placeholder="Folio (ej. FI-2026-0031) o teléfono">
+        <button type="submit">Buscar</button>
+      </form>
+      <button class="track-example" type="button" onclick="showTrackExample()">Ver ejemplo de seguimiento →</button>
+
+      <div class="dash-list" id="track-results">
+        <div class="dash-item">
+          <div class="dash-item-left">
+            <div class="dash-tag">Fiesta</div>
+            <div class="dash-item-text">
+              <div class="dash-item-title">Fiesta infantil — Sucursal Norte</div>
+              <div class="dash-item-meta">Folio FI-2026-0031 · 14 sept 2026 · Vespertino</div>
+            </div>
+          </div>
+          <span class="status-badge status-anticipo">Anticipo recibido</span>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-left">
+            <div class="dash-tag">Pedido</div>
+            <div class="dash-item-text">
+              <div class="dash-item-title">Combo 12 hamburguesas — Sucursal Hidalgo</div>
+              <div class="dash-item-meta">Folio PED-2026-0118 · Entrega 9 sept 2026</div>
+            </div>
+          </div>
+          <span class="status-badge status-confirmada">Confirmado</span>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-left">
+            <div class="dash-tag">Fiesta</div>
+            <div class="dash-item-text">
+              <div class="dash-item-title">Fiesta infantil — Sucursal Victoria</div>
+              <div class="dash-item-meta">Folio FI-2026-0026 · 30 ago 2026 · Matutino</div>
+            </div>
+          </div>
+          <span class="status-badge status-entregada">Evento realizado</span>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-left">
+            <div class="dash-tag">Fiesta</div>
+            <div class="dash-item-text">
+              <div class="dash-item-title">Solicitud de informes — Sucursal Universidad</div>
+              <div class="dash-item-meta">Ref. REF-0088 · sin fecha confirmada</div>
+            </div>
+          </div>
+          <span class="status-badge status-informes">Informes solicitados</span>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-left">
+            <div class="dash-tag">Fiesta</div>
+            <div class="dash-item-text">
+              <div class="dash-item-title">Fiesta infantil — Sucursal Hidalgo</div>
+              <div class="dash-item-meta">Folio FI-2026-0029 · Contrato firmado, falta bitácora</div>
+            </div>
+          </div>
+          <span class="status-badge status-bitacora">Bitácora pendiente</span>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-left">
+            <div class="dash-tag">Fiesta</div>
+            <div class="dash-item-text">
+              <div class="dash-item-title">Fiesta infantil — Sucursal Universidad</div>
+              <div class="dash-item-meta">Folio FI-2026-0022 · Evento realizado 20 ago</div>
+            </div>
+          </div>
+          <span class="status-badge status-encuesta-pend">Encuesta: recordatorio enviado</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB 4: BITÁCORA (USO INTERNO) ===================== -->
+  <div class="page" id="page-4">
+    <div class="card" id="bitacora-locked">
+      <div class="role-locked">
+        <div class="role-locked-icon">🔒</div>
+        <p>Esta sección es de uso interno para las guías de tienda. Cambia a modo <b>"Guía de tienda"</b> en la parte superior para llenar la bitácora de un folio.</p>
+      </div>
+    </div>
+
+    <div class="card" id="bitacora-form" style="display:none">
+      <div class="card-title">Bitácora de fiesta</div>
+      <p class="card-desc">Se llena con el organizador el mismo día en que se firma el contrato — no el día del evento. Recuerda llamar 2 días antes para reconfirmar lo aquí registrado.</p>
+
+      <div class="field-group">
+        <label class="field-label">Folio de fiesta *</label>
+        <input class="field-input" type="text" placeholder="Ej. FI-2026-0031">
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Fecha de la fiesta</label>
+          <input class="field-input" type="date">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Hora de la fiesta</label>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input class="field-input" type="time">
+            <span style="font-size:12px; color:var(--ink-faint); font-weight:700; flex-shrink:0;">a</span>
+            <input class="field-input" type="time">
+          </div>
+        </div>
+      </div>
+      <p class="avail-hint" style="margin:-10px 0 20px;">Recuerda que la fiesta dura 3 horas.</p>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Nombre del festejado(a)</label>
+          <input class="field-input" type="text">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Edad del festejado(a)</label>
+          <input class="field-input" type="number" min="0">
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Número de invitados</label>
+        <input class="field-input" type="number" min="1">
+      </div>
+
+      <div class="notice">Recuerda recalcar que NO se permiten otras bebidas y alimentos que no se adquieran en Carl's Jr.®</div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Menú infantil</label>
+          <input class="field-input" type="text" placeholder="Ej. Combo Estrella x15">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Menú adulto</label>
+          <input class="field-input" type="text" placeholder="Ej. Combo Famous Star x8">
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Otros <span class="opt">(opcional)</span></label>
+        <input class="field-input" type="text">
+      </div>
+
+      <div class="notice">Hacer venta sugestiva y ofrecer botanas.</div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">El pastel estará en</label>
+          <select class="field-input">
+            <option>Mesa de honor</option><option>Guardado</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">¿Traerá piñata?</label>
+          <select class="field-input"><option>Sí</option><option>No</option></select>
+        </div>
+      </div>
+      <p class="avail-hint" style="margin:-10px 0 20px;">Recuerda recalcar que deben traer los desechables para el pastel (platos, cucharas, servilletas, etc.).</p>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">¿Decoración especial?</label>
+          <select class="field-input" onchange="toggleDecoracion(this.value)"><option>No</option><option>Sí</option></select>
+        </div>
+        <div class="field-group" id="decoracion-cuando" style="display:none">
+          <label class="field-label">¿Cuándo la trae?</label>
+          <input class="field-input" type="text" placeholder="Ej. 1 hora antes">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">¿Regalos para concursos?</label>
+          <select class="field-input"><option>No</option><option>Sí</option></select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">¿Cuántos? <span class="opt">(niña / niño)</span></label>
+          <div style="display:flex; gap:8px;">
+            <input class="field-input" type="number" min="0" placeholder="Niña">
+            <input class="field-input" type="number" min="0" placeholder="Niño">
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Secuencia de actividades</label>
+        <textarea class="field-input" placeholder="Orden en que se llevarán a cabo las actividades de la fiesta (pídeselo al organizador)."></textarea>
+      </div>
+      <p class="avail-hint" style="margin:-10px 0 20px;">Recuerda recalcar que la fiesta dura 3 horas máximo.</p>
+
+      <div class="notice">Llama al organizador 2 días antes del evento para confirmar toda la información registrada en esta bitácora.</div>
+      <div class="notice">Recuerda a los papás traer su cámara para las fotos de su pequeño.</div>
+
+      <div class="divider"></div>
+
+      <div class="card-title" style="font-size:16px;">Checklist del proceso</div>
+      <p class="card-desc" style="margin-bottom:12px;">Refleja las etapas reales de antes / durante / después de la fiesta. Se usa también como estado en la pestaña de Seguimiento.</p>
+      <div id="checklist-stages">
+        <label class="check-stage"><input type="checkbox" checked><span>Contrato firmado</span></label>
+        <label class="check-stage"><input type="checkbox" checked><span>Anticipo recibido</span></label>
+        <label class="check-stage"><input type="checkbox"><span>Invitaciones entregadas</span></label>
+        <label class="check-stage"><input type="checkbox"><span>Bitácora completa</span></label>
+        <label class="check-stage"><input type="checkbox"><span>Decoración / lona lista (30 min antes)</span></label>
+        <label class="check-stage"><input type="checkbox"><span>Evento en curso</span></label>
+        <label class="check-stage" onclick="event.preventDefault(); toggleCierre();"><input type="checkbox" id="check-cierre"><span>Cierre de cuenta</span></label>
+        <label class="check-stage"><input type="checkbox"><span>Archivado</span></label>
+      </div>
+
+      <div class="notice-list" id="encuesta-block" style="display:none; margin-top:18px;">
+        <div class="notice-list-title">Cierre y encuesta de satisfacción</div>
+        <p style="font-size:12.5px; color:var(--ink-soft); font-weight:600; line-height:1.6; margin-bottom:12px;">Ofrécela primero en persona con el organizador (mamá o papá). Si no se contesta ahora, el sistema programa un recordatorio automático.</p>
+        <button type="button" class="btn-secondary" style="margin-bottom:10px;" onclick="openSurveyModal()">Aplicar encuesta ahora en tablet</button>
+        <div id="encuesta-estado" class="avail-hint">Sin aplicar todavía — se enviará un recordatorio automático por SMS/email 24 h después del evento si no se aplica aquí.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== MODAL: ENCUESTA DE SATISFACCIÓN (demo, no envía datos) ===================== -->
+<div class="survey-overlay" id="survey-overlay" onclick="if(event.target===this) closeSurveyModal()">
+  <div class="survey-modal">
+    <button type="button" class="survey-close" onclick="closeSurveyModal()">✕</button>
+
+    <div id="survey-form-fields">
+      <div class="survey-header">
+        <img src="CJr_Star.png" alt="Carl's Jr." class="survey-header-icon">
+        <div class="survey-title">¡Gracias por elegirnos para su celebración!</div>
+        <p class="survey-subtitle">Apreciamos nos responda el siguiente breve cuestionario. Esta encuesta es una demo — no envía ni almacena datos reales.</p>
+      </div>
+
+      <form id="survey-form" onsubmit="return handleSurveySubmit(event)">
+        <div class="field-group">
+          <label class="field-label">¿Cómo se enteró que hacemos fiestas infantiles en Carl's Jr.®?</label>
+          <input class="field-input" type="text" placeholder="Ej. Redes sociales, recomendación, pasó por la tienda...">
+        </div>
+
+        <div class="rating-group">
+          <div class="rating-title">El servicio que recibió fue:</div>
+          <div class="rating-options">
+            <label class="rating-option"><input type="radio" name="rate-servicio" value="Excelente"><span>Excelente</span></label>
+            <label class="rating-option"><input type="radio" name="rate-servicio" value="Bueno"><span>Bueno</span></label>
+            <label class="rating-option"><input type="radio" name="rate-servicio" value="Regular"><span>Regular</span></label>
+            <label class="rating-option"><input type="radio" name="rate-servicio" value="Malo"><span>Malo</span></label>
+            <label class="rating-option"><input type="radio" name="rate-servicio" value="Pésimo"><span>Pésimo</span></label>
+          </div>
+        </div>
+
+        <div class="rating-group">
+          <div class="rating-title">La imagen del personal es:</div>
+          <div class="rating-options">
+            <label class="rating-option"><input type="radio" name="rate-imagen" value="Excelente"><span>Excelente</span></label>
+            <label class="rating-option"><input type="radio" name="rate-imagen" value="Bueno"><span>Bueno</span></label>
+            <label class="rating-option"><input type="radio" name="rate-imagen" value="Regular"><span>Regular</span></label>
+            <label class="rating-option"><input type="radio" name="rate-imagen" value="Malo"><span>Malo</span></label>
+            <label class="rating-option"><input type="radio" name="rate-imagen" value="Pésimo"><span>Pésimo</span></label>
+          </div>
+        </div>
+
+        <div class="rating-group">
+          <div class="rating-title">La limpieza del restaurante es:</div>
+          <div class="rating-options">
+            <label class="rating-option"><input type="radio" name="rate-limpieza" value="Excelente"><span>Excelente</span></label>
+            <label class="rating-option"><input type="radio" name="rate-limpieza" value="Bueno"><span>Bueno</span></label>
+            <label class="rating-option"><input type="radio" name="rate-limpieza" value="Regular"><span>Regular</span></label>
+            <label class="rating-option"><input type="radio" name="rate-limpieza" value="Malo"><span>Malo</span></label>
+            <label class="rating-option"><input type="radio" name="rate-limpieza" value="Pésimo"><span>Pésimo</span></label>
+          </div>
+        </div>
+
+        <div class="rating-group">
+          <div class="rating-title">La decoración de su fiesta fue:</div>
+          <div class="rating-options">
+            <label class="rating-option"><input type="radio" name="rate-decoracion" value="Excelente"><span>Excelente</span></label>
+            <label class="rating-option"><input type="radio" name="rate-decoracion" value="Bueno"><span>Bueno</span></label>
+            <label class="rating-option"><input type="radio" name="rate-decoracion" value="Regular"><span>Regular</span></label>
+            <label class="rating-option"><input type="radio" name="rate-decoracion" value="Malo"><span>Malo</span></label>
+            <label class="rating-option"><input type="radio" name="rate-decoracion" value="Pésimo"><span>Pésimo</span></label>
+          </div>
+        </div>
+
+        <div class="rating-group">
+          <div class="rating-title">Los precios son:</div>
+          <div class="rating-options">
+            <label class="rating-option"><input type="radio" name="rate-precios" value="Excelente"><span>Excelente</span></label>
+            <label class="rating-option"><input type="radio" name="rate-precios" value="Bueno"><span>Bueno</span></label>
+            <label class="rating-option"><input type="radio" name="rate-precios" value="Regular"><span>Regular</span></label>
+            <label class="rating-option"><input type="radio" name="rate-precios" value="Malo"><span>Malo</span></label>
+            <label class="rating-option"><input type="radio" name="rate-precios" value="Pésimo"><span>Pésimo</span></label>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">¿Recomendaría nuestro servicio para fiestas?</label>
+          <input class="field-input" type="text" placeholder="Su respuesta">
+        </div>
+
+        <div class="field-group" style="margin-bottom:8px;">
+          <label class="field-label">Le pedimos sus comentarios para mejorar nuestro servicio</label>
+          <textarea class="field-input" placeholder="Escriba aquí sus comentarios..."></textarea>
+        </div>
+
+        <button class="btn-primary" type="submit">Enviar encuesta</button>
+      </form>
+    </div>
+
+    <div class="survey-success" id="survey-success">
+      <img src="CJr_Star.png" alt="Carl's Jr." class="survey-success-icon">
+      <h3>¡Gracias por sus respuestas!</h3>
+      <p>La encuesta quedó aplicada en persona con el organizador. No se enviará el recordatorio automático por SMS/email.</p>
+      <button type="button" class="btn-secondary" onclick="closeSurveyModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: CONFIRMACIÓN POR CORREO (demo, no envía nada) ===================== -->
+<div class="survey-overlay" id="confirm-overlay" onclick="if(event.target===this) closeConfirmModal()">
+  <div class="survey-modal" style="max-width:440px;">
+    <button type="button" class="survey-close" onclick="closeConfirmModal()">✕</button>
+    <div class="survey-success" style="display:block;">
+      <img src="CJr_Star.png" alt="Carl's Jr." class="survey-success-icon">
+      <h3 id="confirm-modal-title">¡Confirmación enviada!</h3>
+      <p id="confirm-modal-text">Hemos enviado a tu correo la confirmación de todo lo reservado.</p>
+      <div class="confirm-summary" id="confirm-summary"></div>
+      <button type="button" class="btn-primary" style="margin-top:0;" onclick="closeConfirmModal()">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: POLÍTICAS DE FIESTAS INFANTILES (lectura obligatoria) ===================== -->
+<div class="survey-overlay" id="policy-overlay">
+  <div class="survey-modal policy-modal">
+    <div class="policy-modal-head">
+      <div class="survey-title" style="text-align:left; margin-bottom:4px;">Políticas de Fiestas Infantiles</div>
+      <p class="survey-subtitle" style="text-align:left; margin:0;">Lee el documento completo hasta el final para poder marcarlo como leído.</p>
+    </div>
+
+    <div class="policy-scroll" id="policy-scroll" onscroll="checkPolicyScroll()">
+      <p class="policy-intro">Estimado invitado, le agradecemos su preferencia y el haber elegido a Carl's Jr.® para realizar su fiesta. Le reiteramos nuestro compromiso de calidad y servicio y para poder brindarlo le pedimos leer las políticas de fiestas infantiles y aceptar de conformidad.</p>
+      <ul>
+        <li>Las fiestas infantiles tienen una duración máxima de 3 horas. Por las mañanas de lunes a domingo de 10 am a 1 pm y por las tardes de lunes a jueves de 5 pm a 8 pm.</li>
+        <li>Se reserva para el evento un área de mesas acorde al número de combos previamente contratados.</li>
+        <li>El área de juegos, terraza, baños, estacionamiento e instalaciones en general son áreas comunes a disposición de todos los clientes del restaurante.</li>
+        <li>Se otorgan invitaciones acordes al número de combos contratados (tabla de rendimiento que le informarán previamente) y el número de stickers es igual al número de combos infantiles contratados.</li>
+        <li>La programación de la televisión es la que normalmente se maneja por política en el restaurante (canales de videos).</li>
+        <li>La música que puede sonarse en eventos es la del género infantil atendiendo a las políticas de volumen que se manejan.</li>
+        <li>Si se requiere factura le pedimos solicitarla en nuestro portal que le será previamente informado. Se genera a partir del pago del evento.</li>
+        <li>Para que los niños ingresen al Juego se debe respetar el reglamento del área que se encuentra exhibido en el mismo, atendiendo a medidas de estatura por seguridad de sus invitados y de todos los clientes. Altura máxima para ingresar al juego: 1.20 m.</li>
+        <li>El área para partir la piñata es la terraza; en caso de lluvia o mal tiempo y que esto no sea posible, no podrá llevarse a cabo por causas ajenas a Carl's Jr.® Sólo se permite el ingreso de las bolsitas de dulces (sin chicles) y el pastel con sus desechables para servirse.</li>
+        <li>Artículos y servicios que por la seguridad/comodidad de sus invitados y de todos los clientes no se permiten son: confeti, chicles, burbujas, velas de pirotecnia, animadores, shows infantiles o payasos.</li>
+        <li>Los anticipos se aplican a la fecha contratada y en el restaurante contratado. En caso de que por alguna causa requiera cambiar de fecha (sujeta a disponibilidad), cuenta con un plazo máximo de 7 días naturales previos a la fecha contratada para notificarlo y se le respetará el anticipo otorgado. Después de este plazo ya no se aplica para otra fecha. No se manejan reembolsos de anticipos ni cambios de restaurante.</li>
+      </ul>
+    </div>
+
+    <div class="policy-modal-foot">
+      <div class="checkbox-row policy-checkbox-row">
+        <input type="checkbox" id="policy-modal-checkbox" disabled onchange="togglePolicyAcceptButton()">
+        <label for="policy-modal-checkbox" id="policy-modal-checkbox-label" class="locked">Haz scroll hasta el final del documento para poder marcar esta casilla — <span id="policy-scroll-hint">sigue bajando ↓</span></label>
+      </div>
+      <button type="button" class="btn-primary" id="policy-accept-btn" disabled onclick="acceptPolicy()">Marcar como leída y aceptar</button>
+      <button type="button" class="btn-secondary" style="margin-top:10px;" onclick="closePolicyModal()">Cerrar sin aceptar</button>
+    </div>
+  </div>
+</div>
+
+<footer style="border-top:1px solid var(--line); padding:24px 40px; text-align:center;">
+  <span style="font-size:11.5px; color:var(--ink-faint); font-weight:600;">Propuesta de diseño front end — Punto Kuale · Sin conexión a Odoo todavía</span>
+</footer>
+
+<script>
+let folioCounter = 31;
+let refCounter = 88;
+
+function setRole(role) {
+  document.getElementById('role-invitado').classList.toggle('active', role === 'invitado');
+  document.getElementById('role-guia').classList.toggle('active', role === 'guia');
+  const hint = document.getElementById('guia-hint-1');
+  hint.textContent = role === 'guia'
+    ? 'Modo guía: estás capturando esta solicitud en nombre del invitado en mostrador o por teléfono.'
+    : 'Aplica si el invitado llega directamente a tienda o solicita informes por teléfono. La guía puede completar este formulario en su nombre.';
+  document.getElementById('bitacora-locked').style.display = role === 'guia' ? 'none' : 'block';
+  document.getElementById('bitacora-form').style.display = role === 'guia' ? 'block' : 'none';
+}
+
+function previewContract() {
+  const val = (id) => { const el = document.getElementById(id); return el && el.value ? el.value : '—'; };
+  document.getElementById('cp-nombre').textContent = val('informes-nombre');
+  document.getElementById('cp-sucursal').textContent = val('avail-sucursal');
+  document.getElementById('cp-ninos').textContent = val('informes-ninos');
+  document.getElementById('cp-adultos').textContent = val('informes-adultos');
+  document.getElementById('cp-mesas-out').textContent = val('cp-mesas');
+  document.getElementById('cp-fecha').textContent = val('cp-fecha-input');
+  document.getElementById('cp-horario').textContent = val('informes-horario');
+  document.getElementById('cp-costo-out').textContent = val('cp-costo');
+  document.getElementById('cp-incluye-out').textContent = val('cp-incluye');
+  document.getElementById('contract-preview').classList.add('active');
+}
+
+function toggleDecoracion(val) {
+  document.getElementById('decoracion-cuando').style.display = val === 'Sí' ? 'block' : 'none';
+}
+
+function toggleCierre() {
+  const box = document.getElementById('check-cierre');
+  box.checked = !box.checked;
+  document.getElementById('encuesta-block').style.display = box.checked ? 'block' : 'none';
+}
+
+function openSurveyModal() {
+  document.getElementById('survey-overlay').classList.add('active');
+}
+
+function closeSurveyModal() {
+  document.getElementById('survey-overlay').classList.remove('active');
+  document.getElementById('survey-form').reset();
+  document.getElementById('survey-form-fields').style.display = 'block';
+  document.getElementById('survey-success').style.display = 'none';
+}
+
+function handleSurveySubmit(evt) {
+  evt.preventDefault();
+  document.getElementById('survey-form-fields').style.display = 'none';
+  document.getElementById('survey-success').style.display = 'block';
+  document.getElementById('encuesta-estado').textContent = 'Encuesta aplicada en persona con el organizador. No se enviará recordatorio.';
+  return false;
+}
+
+let policyAccepted = false;
+
+function openPolicyModal() {
+  const overlay = document.getElementById('policy-overlay');
+  const scrollBox = document.getElementById('policy-scroll');
+  const checkbox = document.getElementById('policy-modal-checkbox');
+  const label = document.getElementById('policy-modal-checkbox-label');
+  const hint = document.getElementById('policy-scroll-hint');
+  const acceptBtn = document.getElementById('policy-accept-btn');
+
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  if (policyAccepted) {
+    checkbox.disabled = false;
+    checkbox.checked = true;
+    label.classList.remove('locked');
+    hint.textContent = 'ya aceptadas.';
+    acceptBtn.disabled = false;
+    acceptBtn.textContent = 'Cerrar';
+  } else {
+    scrollBox.scrollTop = 0;
+    checkbox.disabled = true;
+    checkbox.checked = false;
+    label.classList.add('locked');
+    hint.textContent = 'sigue bajando ↓';
+    acceptBtn.disabled = true;
+    acceptBtn.textContent = 'Marcar como leída y aceptar';
+  }
+  setTimeout(checkPolicyScroll, 50);
+}
+
+function closePolicyModal() {
+  document.getElementById('policy-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function checkPolicyScroll() {
+  if (policyAccepted) return;
+  const box = document.getElementById('policy-scroll');
+  const checkbox = document.getElementById('policy-modal-checkbox');
+  const label = document.getElementById('policy-modal-checkbox-label');
+  const hint = document.getElementById('policy-scroll-hint');
+  const reachedEnd = box.scrollTop + box.clientHeight >= box.scrollHeight - 6;
+  if (reachedEnd && checkbox.disabled) {
+    checkbox.disabled = false;
+    label.classList.remove('locked');
+    hint.textContent = 'ya puedes marcarla ✓';
+  }
+}
+
+function togglePolicyAcceptButton() {
+  const checkbox = document.getElementById('policy-modal-checkbox');
+  document.getElementById('policy-accept-btn').disabled = !checkbox.checked;
+}
+
+function acceptPolicy() {
+  if (policyAccepted) { closePolicyModal(); return; }
+  const checkbox = document.getElementById('policy-modal-checkbox');
+  if (!checkbox.checked) return;
+
+  policyAccepted = true;
+  document.getElementById('accept-policy').checked = true;
+  document.getElementById('policy-status-pending').style.display = 'none';
+  document.getElementById('policy-status-done').style.display = 'flex';
+  closePolicyModal();
+}
+
+function openConfirmModal(mensaje, rows) {
+  document.getElementById('confirm-modal-text').textContent = mensaje;
+  const summary = document.getElementById('confirm-summary');
+  summary.innerHTML = (rows || []).map(([label, value]) =>
+    `<div class="cs-row"><span class="cs-label">${label}</span><span class="cs-value">${value || '—'}</span></div>`
+  ).join('');
+  document.getElementById('confirm-overlay').classList.add('active');
+}
+
+function closeConfirmModal() {
+  document.getElementById('confirm-overlay').classList.remove('active');
+}
+
+function showTab(n) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + n).classList.add('active');
+  document.getElementById('tabbtn-' + n).classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function showStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  document.getElementById('stepbtn-' + n).classList.add('active');
+}
+
+const availData = {
+  'Hidalgo': [['Sáb 12 sept','Matutino','libre'],['Sáb 12 sept','Vespertino','ocupada'],['Dom 13 sept','Matutino','libre'],['Sáb 19 sept','Vespertino','libre']],
+  'Norte': [['Sáb 12 sept','Vespertino','libre'],['Dom 13 sept','Matutino','ocupada'],['Sáb 19 sept','Matutino','libre'],['Dom 20 sept','Vespertino','libre']],
+  'Universidad': [['Dom 13 sept','Vespertino','libre'],['Sáb 19 sept','Matutino','ocupada'],['Sáb 19 sept','Vespertino','libre'],['Dom 27 sept','Matutino','libre']],
+  'Victoria': [['Sáb 12 sept','Matutino','ocupada'],['Dom 13 sept','Vespertino','libre'],['Sáb 26 sept','Matutino','libre'],['Dom 27 sept','Vespertino','libre']]
+};
+
+function renderAvailability() {
+  const suc = document.getElementById('avail-sucursal').value;
+  const list = document.getElementById('avail-list');
+  if (!suc || !availData[suc]) {
+    list.innerHTML = '<p class="avail-hint">Elige una sucursal para ver las próximas fechas disponibles.</p>';
+    return;
+  }
+  list.innerHTML = availData[suc].map(([fecha,horario,estado]) => `
+    <div class="avail-item">
+      <span class="avail-date">${fecha}<span>${horario}</span></span>
+      <span class="avail-chip ${estado}">${estado === 'libre' ? 'Disponible' : 'Apartada'}</span>
+    </div>
+  `).join('') + '<p class="avail-hint">Vista de ejemplo — se conectará al calendario real de Sala de fiestas en Odoo.</p>';
+}
+
+function togglePagoFiesta(val) {
+  const eco = document.getElementById('fiesta-ecommerce-flow');
+  const efec = document.getElementById('fiesta-efectivo-flow');
+  const hint = document.getElementById('pago-hint-fiesta');
+  const guiaInput = document.getElementById('guia-efectivo');
+  if (val === 'Transferencia' || val === 'Liga de pago') {
+    eco.style.display = 'block'; efec.style.display = 'none'; hint.style.display = 'none';
+    guiaInput.required = false;
+  } else if (val === 'Efectivo') {
+    eco.style.display = 'none'; efec.style.display = 'block'; hint.style.display = 'none';
+    guiaInput.required = true;
+  } else {
+    eco.style.display = 'none'; efec.style.display = 'none'; hint.style.display = 'block';
+    guiaInput.required = false;
+  }
+}
+
+function setTipoPago(tipo) {
+  document.getElementById('pago-total-btn').classList.toggle('selected', tipo === 'total');
+  document.getElementById('pago-anticipo-btn').classList.toggle('selected', tipo === 'anticipo');
+  document.getElementById('pedido-total-flow').style.display = tipo === 'total' ? 'block' : 'none';
+  document.getElementById('pedido-anticipo-flow').style.display = tipo === 'anticipo' ? 'block' : 'none';
+  document.getElementById('pedido-anticipo-monto').required = tipo === 'anticipo';
+}
+
+function updateFileName(input) {
+  const span = input.closest('.file-field').querySelector('.file-field-name');
+  span.textContent = input.files.length ? input.files[0].name : span.dataset.default;
+}
+
+function handleSubmitInformes(evt) {
+  evt.preventDefault();
+  refCounter++;
+  document.getElementById('ref-informes').textContent = 'Referencia: REF-' + String(refCounter).padStart(4,'0');
+  const toast = document.getElementById('toast-informes');
+  toast.style.display = 'flex';
+  toast.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  return false;
+}
+
+function handleSubmitAnticipo(evt) {
+  evt.preventDefault();
+  const forma = document.getElementById('forma-pago-fiesta').value;
+  if (!forma) { alert('Selecciona la forma de pago del anticipo.'); return false; }
+  if (!document.getElementById('accept-policy').checked) {
+    alert('Debes leer y aceptar las políticas de fiestas infantiles antes de confirmar la reservación.');
+    openPolicyModal();
+    return false;
+  }
+  folioCounter++;
+  const folio = 'FI-2026-' + String(folioCounter).padStart(4,'0');
+  document.getElementById('folio-fiesta').textContent = 'Folio: ' + folio;
+  const toast = document.getElementById('toast-anticipo');
+  toast.style.display = 'flex';
+  toast.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+  const correo = document.getElementById('cp-correo').value;
+  openConfirmModal('Hemos enviado a ' + correo + ' la confirmación de todo lo reservado para tu fiesta infantil:', [
+    ['Folio', folio],
+    ['Sucursal', document.getElementById('avail-sucursal').value],
+    ['Fecha', document.getElementById('cp-fecha-input').value],
+    ['Mesas reservadas', document.getElementById('cp-mesas').value],
+    ['Costo total', document.getElementById('cp-costo').value],
+    ['Anticipo', '$500 MXN'],
+    ['Forma de pago', forma],
+    ['Correo', correo],
+  ]);
+  return false;
+}
+
+let pedidoFolioCounter = 118;
+function handleSubmitPedido(evt) {
+  evt.preventDefault();
+  pedidoFolioCounter++;
+  const folio = 'PED-2026-' + String(pedidoFolioCounter).padStart(4,'0');
+  document.getElementById('folio-pedido').textContent = 'Folio: ' + folio;
+  const toast = document.getElementById('toast-pedido');
+  toast.style.display = 'flex';
+  toast.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+  const esAnticipo = document.getElementById('pedido-anticipo-btn').classList.contains('selected');
+  const correo = document.getElementById('pedido-correo').value;
+  const rows = [
+    ['Folio', folio],
+    ['Sucursal', document.getElementById('pedido-sucursal').value],
+    ['Tipo de pedido', document.getElementById('pedido-tipo').value],
+    ['Cantidad', document.getElementById('pedido-cantidad').value],
+    ['Fecha de entrega', document.getElementById('pedido-fecha-entrega').value],
+    ['Nombre de contacto', document.getElementById('pedido-nombre').value],
+    ['Teléfono', document.getElementById('pedido-telefono').value],
+    ['Tipo de pago', esAnticipo ? 'Anticipo' : 'Pago total'],
+  ];
+  if (esAnticipo) {
+    rows.push(['Monto del anticipo', document.getElementById('pedido-anticipo-monto').value]);
+    rows.push(['Forma de pago', document.getElementById('pedido-forma-pago').value]);
+  }
+  rows.push(['Correo', correo]);
+  openConfirmModal('Hemos enviado a ' + correo + ' la confirmación de tu pedido especial:', rows);
+  return false;
+}
+
+function handleTrackSearch(evt) {
+  evt.preventDefault();
+  showTrackExample();
+  return false;
+}
+function showTrackExample() {
+  document.getElementById('track-results').classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dairy Queen — Pedidos Especiales | Punto Kuale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#0a0a0a; --ink-soft:#4a4a4a; --ink-faint:#8a8a8a;
+    --paper:#ffffff; --paper-soft:#fafafa;
+    --line:#e7e7e7; --line-soft:#f0f0f0;
+    --accent:#ED1C24; --accent-soft:#fdeaea;
+    --accent2:#0072BC; --accent2-soft:#e6f3fb;
+    --radius:10px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Manrope',sans-serif; background:var(--paper); color:var(--ink); min-height:100vh; -webkit-font-smoothing:antialiased; }
+
+  /* ===== Brand stripe ===== */
+  .brand-stripe { height:6px; background:var(--accent2); position:sticky; top:0; z-index:101; }
+
+  /* ===== Topbar ===== */
+  .topbar { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:16px 40px; border-bottom:1px solid var(--line); position:sticky; top:6px; background:rgba(255,255,255,0.92); backdrop-filter:blur(8px); z-index:100; }
+  .topbar-brand { font-weight:800; font-size:15px; letter-spacing:-0.01em; display:flex; align-items:center; gap:14px; }
+  .header-logo { height:30px; width:auto; display:block; }
+  .topbar-divider { width:1px; height:20px; background:var(--line); }
+  .topbar-suffix { font-size:12px; font-weight:700; color:var(--ink-faint); letter-spacing:0.2px; }
+  .topbar-right { display:flex; align-items:center; gap:14px; }
+  .brand-switch { font-size:12.5px; font-weight:700; color:var(--ink-soft); text-decoration:none; border-bottom:1.5px solid var(--line); padding-bottom:1px; }
+  .brand-switch:hover { color:var(--accent2); border-color:var(--accent2); }
+  .role-toggle { display:flex; background:var(--paper-soft); border:1.5px solid var(--line); border-radius:50px; padding:3px; }
+  .role-btn { border:none; background:none; font-family:'Manrope',sans-serif; font-weight:700; font-size:11.5px; padding:6px 13px; border-radius:50px; cursor:pointer; color:var(--ink-faint); transition:all 0.15s; }
+  .role-btn.active { background:var(--accent2); color:white; }
+  @media(max-width:640px){ .topbar{padding:14px 18px; flex-wrap:wrap; gap:10px;} .topbar-right{width:100%; justify-content:space-between;} .header-logo{height:24px;} }
+
+  /* ===== Hero ===== */
+  .hero-bg { width:100%; background:linear-gradient(180deg,var(--accent2-soft) 0%,rgba(230,243,251,0) 65%); }
+  .hero { max-width:720px; margin:0 auto; padding:52px 32px 44px; text-align:center; }
+  .hero-logo-wrap { display:flex; align-items:center; justify-content:center; margin:0 auto 24px; }
+  .hero-logo { height:88px; width:auto; display:block; }
+  .hero-eyebrow { font-size:12px; font-weight:700; color:var(--accent); margin-bottom:14px; }
+  .hero h1 { font-weight:800; font-size:clamp(28px,4.2vw,40px); line-height:1.15; letter-spacing:-0.02em; color:var(--ink); }
+  .hero-rule { width:46px; height:3px; background:var(--accent); border-radius:3px; margin:24px auto; }
+  .hero p { font-size:15px; color:var(--ink-soft); line-height:1.65; max-width:480px; margin:0 auto; font-weight:500; }
+  .hero-branches { margin-top:26px; font-size:12px; color:var(--ink-faint); font-weight:600; max-width:520px; margin-left:auto; margin-right:auto; }
+  .hero-branches b { color:var(--ink-soft); }
+
+  .container { max-width:720px; margin:0 auto; padding:0 32px 100px; }
+
+  /* ===== Tabs ===== */
+  .tabs-bar { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:36px; }
+  .tab-btn { text-align:center; background:var(--paper-soft); border:1.5px solid var(--line); border-radius:12px; padding:13px 10px; font-family:'Manrope',sans-serif; font-weight:700; font-size:13px; color:var(--ink-soft); cursor:pointer; transition:all 0.18s; }
+  .tab-btn:hover { border-color:var(--accent); color:var(--ink); }
+  .tab-btn.active { background:var(--accent2); border-color:var(--accent2); color:white; box-shadow:0 4px 14px -6px rgba(0,114,188,0.55); }
+  @media(max-width:480px){ .tabs-bar{grid-template-columns:1fr; gap:8px;} }
+
+  /* ===== Card / form ===== */
+  .card { background:var(--paper); padding:0; animation:fadeUp 0.25s ease both; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .card-title { font-weight:800; font-size:21px; letter-spacing:-0.01em; color:var(--ink); margin-bottom:8px; }
+  .card-desc { font-size:14px; color:var(--ink-soft); line-height:1.6; margin-bottom:26px; font-weight:500; }
+
+  .field-group { margin-bottom:20px; }
+  .field-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .field-label { display:block; font-size:11.5px; font-weight:700; color:var(--ink); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:8px; }
+  .field-label .opt { text-transform:none; color:var(--ink-faint); font-weight:500; letter-spacing:0; }
+  .field-input { width:100%; padding:13px 14px; border:1.5px solid var(--line); border-radius:8px; font-family:'Manrope',sans-serif; font-size:14px; font-weight:500; color:var(--ink); transition:border-color 0.15s; background:var(--paper-soft); }
+  .field-input::placeholder { color:var(--ink-faint); font-weight:500; }
+  .field-input:focus { outline:none; border-color:var(--accent); background:var(--paper); box-shadow:0 0 0 3px var(--accent-soft); }
+  textarea.field-input { resize:vertical; min-height:88px; }
+  select.field-input { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%238a8a8a' d='M0 0l6 8 6-8z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 16px center; padding-right:36px; }
+
+  .file-field { display:flex; align-items:center; border:1.5px dashed var(--line); border-radius:8px; overflow:hidden; background:var(--paper-soft); cursor:pointer; transition:border-color 0.15s; }
+  .file-field:hover { border-color:var(--accent); }
+  .file-field-btn { background:var(--ink); color:white; font-family:'Manrope',sans-serif; font-weight:700; font-size:12px; padding:12px 16px; white-space:nowrap; }
+  .file-field-name { padding:12px 14px; font-size:13px; color:var(--ink-faint); font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+  .file-field input[type=file] { display:none; }
+
+  .btn-primary { width:100%; padding:16px; background:var(--accent2); color:white; border:none; border-radius:8px; font-family:'Manrope',sans-serif; font-weight:700; font-size:14.5px; letter-spacing:0.2px; cursor:pointer; transition:all 0.18s; margin-top:6px; }
+  .btn-primary:hover { background:#005a94; }
+
+  .notice { background:var(--paper-soft); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:14px 18px; margin:0 0 26px; font-size:12.5px; color:var(--ink-soft); font-weight:600; line-height:1.55; }
+  .notice-list { margin:0 0 26px; padding:14px 18px; background:var(--paper-soft); border:1px solid var(--line); border-radius:8px; }
+  .notice-list-title { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-faint); margin-bottom:8px; }
+  .notice-list ul { list-style:none; display:flex; flex-direction:column; gap:6px; }
+  .notice-list li { font-size:12.5px; color:var(--ink-soft); font-weight:600; padding-left:16px; position:relative; }
+  .notice-list li::before { content:'—'; position:absolute; left:0; color:var(--ink-faint); }
+
+  .success-toast { display:none; align-items:flex-start; gap:10px; background:var(--paper-soft); border:1px solid var(--line); border-radius:8px; padding:14px 18px; margin-top:18px; font-size:13px; color:var(--ink); font-weight:700; line-height:1.5; }
+  .success-toast .st-icon { width:22px; height:22px; border-radius:50%; background:var(--accent); color:white; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; margin-top:1px; }
+  .success-toast .st-folio { display:block; font-weight:800; color:var(--accent); margin-top:4px; font-size:13.5px; }
+  .success-toast .st-note { display:block; font-weight:500; color:var(--ink-soft); margin-top:4px; font-size:12px; }
+
+  /* ===== Modal: confirmación por correo (demo, no envía nada) ===== */
+  .confirm-overlay { display:none; position:fixed; inset:0; background:rgba(10,10,10,0.55); z-index:200; align-items:center; justify-content:center; padding:20px; }
+  .confirm-overlay.active { display:flex; }
+  .confirm-modal { background:var(--paper); border-radius:16px; max-width:440px; width:100%; padding:34px 28px 28px; position:relative; text-align:center; box-shadow:0 30px 60px -20px rgba(0,0,0,0.35); animation:fadeUp 0.2s ease both; }
+  .confirm-close { position:absolute; top:16px; right:16px; width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper-soft); font-size:15px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--ink-soft); }
+  .confirm-close:hover { border-color:var(--accent2); color:var(--ink); }
+  .confirm-icon { height:64px; width:auto; display:block; margin:0 auto 18px; }
+  .confirm-modal h3 { font-weight:800; font-size:17px; margin-bottom:8px; }
+  .confirm-modal p { font-size:13px; color:var(--ink-soft); font-weight:500; line-height:1.6; max-width:360px; margin:0 auto 22px; }
+  .confirm-summary { text-align:left; background:var(--paper-soft); border:1px solid var(--line); border-radius:10px; padding:6px 18px; margin:0 0 22px; }
+  .confirm-summary .cs-row { display:flex; justify-content:space-between; align-items:baseline; gap:14px; padding:9px 0; font-size:12.5px; border-bottom:1px solid var(--line-soft); }
+  .confirm-summary .cs-row:last-child { border-bottom:none; }
+  .confirm-summary .cs-label { color:var(--ink-faint); font-weight:700; flex-shrink:0; }
+  .confirm-summary .cs-value { color:var(--ink); font-weight:700; text-align:right; }
+
+  .page { display:none; } .page.active { display:block; }
+
+  /* ===== Segmented pill (tipo de pago) ===== */
+  .pill-group { display:flex; gap:8px; margin-bottom:22px; }
+  .pill-btn { flex:1; text-align:center; padding:12px 10px; border:1.5px solid var(--line); border-radius:8px; background:var(--paper-soft); font-family:'Manrope',sans-serif; font-weight:700; font-size:13px; color:var(--ink-soft); cursor:pointer; transition:all 0.15s; }
+  .pill-btn:hover { border-color:var(--accent); }
+  .pill-btn.selected { background:var(--accent2); border-color:var(--accent2); color:white; }
+
+  /* ===== Seguimiento (dashboard) ===== */
+  .track-search { display:flex; gap:10px; margin-bottom:8px; }
+  .track-search .field-input { flex:1; }
+  .track-search button { flex-shrink:0; padding:0 22px; background:var(--ink); color:white; border:none; border-radius:8px; font-family:'Manrope',sans-serif; font-weight:700; font-size:13.5px; cursor:pointer; transition:background 0.18s; }
+  .track-search button:hover { background:var(--accent2); }
+  .track-example { display:block; text-align:center; font-size:12px; font-weight:700; color:var(--ink-faint); background:none; border:none; margin:14px auto 30px; cursor:pointer; text-decoration:underline; }
+  .track-example:hover { color:var(--accent2); }
+
+  .dash-list { display:none; flex-direction:column; gap:10px; }
+  .dash-list.active { display:flex; }
+  .dash-item { display:flex; align-items:center; justify-content:space-between; gap:16px; border:1.5px solid var(--line); border-radius:12px; padding:16px 18px; background:var(--paper); }
+  .dash-item-left { display:flex; align-items:center; gap:16px; min-width:0; flex:1; }
+  .dash-tag { flex-shrink:0; width:90px; text-align:center; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-faint); border:1px solid var(--line); border-radius:6px; padding:6px 4px; }
+  .dash-item-text { min-width:0; }
+  .dash-item-title { font-size:14px; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .dash-item-meta { font-size:12px; color:var(--ink-faint); font-weight:600; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  .status-badge { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; width:158px; font-size:10.5px; font-weight:800; padding:7px 12px; border-radius:50px; text-transform:uppercase; letter-spacing:0.4px; white-space:nowrap; text-align:center; }
+  .status-informes { background:var(--paper-soft); border:1px solid var(--line); color:var(--ink-soft); }
+  .status-anticipo { background:var(--accent); color:white; }
+  .status-confirmada { background:var(--accent2); color:white; }
+  .status-entregada { background:#1f9d55; color:white; }
+  .status-diferido { background:var(--accent2-soft); border:1px solid var(--accent2); color:var(--accent2); }
+  .status-cancelada { background:var(--paper-soft); border:1px solid var(--line); color:var(--ink-faint); }
+
+  @media(max-width:560px){
+    .field-row { grid-template-columns:1fr; }
+    .hero{padding:40px 24px 32px} .container{padding:0 24px 80px}
+    .hero-logo-wrap{margin-bottom:18px;} .hero-logo{height:52px;}
+    .dash-item{padding:14px 16px; flex-direction:column; align-items:flex-start; gap:12px;}
+    .dash-item-left{width:100%;}
+    .status-badge{align-self:flex-start;}
+    .pill-group{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<div class="brand-stripe"></div>
+<nav class="topbar">
+  <div class="topbar-brand">
+    <img src="DQ_Logo_2.png" alt="Dairy Queen" class="header-logo">
+    <span class="topbar-divider"></span>
+    <span class="topbar-suffix">Punto Kuale</span>
+  </div>
+  <div class="topbar-right">
+    <div class="role-toggle">
+      <button class="role-btn active" id="role-invitado" type="button" onclick="setRole('invitado')">Invitado</button>
+      <button class="role-btn" id="role-guia" type="button" onclick="setRole('guia')">Guía de tienda</button>
+    </div>
+    <a class="brand-switch" href="carls-jr-fiestas-pedidos.html">← Ir a Carl's Jr.</a>
+  </div>
+</nav>
+
+<div class="hero-bg">
+  <div class="hero">
+    <div class="hero-logo-wrap">
+      <img src="DQ_Logo_2.png" alt="Dairy Queen" class="hero-logo">
+    </div>
+    <h1>Realiza tu pedido especial</h1>
+    <div class="hero-rule"></div>
+    <p>Pasteles y pedidos anticipados con entrega posterior, en cualquier sucursal Dairy Queen.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TABS -->
+  <div class="tabs-bar">
+    <button class="tab-btn active" id="tabbtn-1" onclick="showTab(1)">Pedidos especiales</button>
+    <button class="tab-btn" id="tabbtn-2" onclick="showTab(2)">Seguimiento de solicitud</button>
+  </div>
+
+  <!-- ===================== TAB 1: PEDIDOS ESPECIALES ===================== -->
+  <div class="page active" id="page-1">
+    <form class="card" onsubmit="return handleSubmitPedido(event)">
+      <div class="card-title">Pedido especial</div>
+      <p class="card-desc">Pasteles y pedidos anticipados con entrega posterior. El descuento de inventario/costo se aplica hasta la fecha real de entrega, no en el momento del pago.</p>
+
+      <div class="notice" id="guia-hint">Aplica si el invitado llega directamente a tienda o solicita el pedido por teléfono. La guía puede completar este formulario en su nombre.</div>
+
+      <div class="pill-group">
+        <button type="button" class="pill-btn selected" id="pago-total-btn" onclick="setTipoPago('total')">Pago total</button>
+        <button type="button" class="pill-btn" id="pago-anticipo-btn" onclick="setTipoPago('anticipo')">Anticipo</button>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Sucursal *</label>
+          <select class="field-input" id="pedido-sucursal" onchange="handleSucursalChange(this.value)" required>
+            <option value="">Selecciona una sucursal</option>
+            <option>Hidalgo</option><option>Universidad</option><option>Centro</option><option>Laguna</option>
+            <option>Ejército</option><option>Altama</option><option>Altamira</option><option>Norte</option>
+            <option>Victoria</option><option>Libertad</option><option>Madero</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Tipo de pedido *</label>
+          <select class="field-input" id="pedido-tipo" required>
+            <option value="">Selecciona</option>
+            <option id="opt-pastel">Pastel</option><option>Pedido anticipado (Blizzard/otro producto)</option><option>Otro pedido especial</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Descripción del pedido *</label>
+        <textarea class="field-input" id="pedido-descripcion" required placeholder="Sabor, tamaño, decoración, cantidad de piezas, etc."></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Cantidad *</label>
+          <input class="field-input" type="number" min="1" id="pedido-cantidad" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Fecha de entrega estimada *</label>
+          <input class="field-input" type="date" id="pedido-fecha-entrega" required>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Nombre de contacto *</label>
+          <input class="field-input" type="text" id="pedido-nombre" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Teléfono de contacto *</label>
+          <input class="field-input" type="tel" id="pedido-telefono" required>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Correo electrónico *</label>
+        <input class="field-input" type="email" id="pedido-correo" placeholder="correo@ejemplo.com" required>
+      </div>
+
+      <!-- FLUJO PAGO TOTAL -->
+      <div id="pedido-total-flow">
+        <div class="notice">Se marca en POS y genera ticket de inmediato — aunque la entrega sea posterior, el inventario se descuenta hasta la fecha de entrega, no en la fecha de pago.</div>
+        <div class="field-group">
+          <label class="field-label">Subir ticket <span class="opt">(al completar el pago, opcional en esta etapa)</span></label>
+          <label class="file-field">
+            <span class="file-field-btn">Elegir archivo</span>
+            <span class="file-field-name" data-default="Ningún archivo seleccionado">Ningún archivo seleccionado</span>
+            <input type="file" onchange="updateFileName(this)">
+          </label>
+        </div>
+      </div>
+
+      <!-- FLUJO ANTICIPO -->
+      <div id="pedido-anticipo-flow" style="display:none">
+        <div class="notice">No se genera ticket hasta completar el pago restante.</div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Monto del anticipo *</label>
+            <input class="field-input" type="number" min="1" id="pedido-anticipo-monto" placeholder="$">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Forma de pago *</label>
+            <select class="field-input" id="pedido-forma-pago">
+              <option value="">Selecciona</option>
+              <option>Transferencia</option><option>Liga de pago</option><option>Efectivo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="notice-list">
+        <div class="notice-list-title">Vinculación con costo</div>
+        <ul>
+          <li>El número de ticket capturado se vincula al folio del pedido</li>
+          <li>El descuento de costo/inventario ocurre solo cuando el folio se marca como entregado</li>
+        </ul>
+      </div>
+
+      <button class="btn-primary" type="submit">Enviar pedido</button>
+      <div class="success-toast" id="toast-pedido">
+        <span class="st-icon">✓</span>
+        <span>Pedido registrado.<span class="st-folio" id="folio-pedido"></span><span class="st-note">El costo/inventario se descuenta hasta la fecha de entrega capturada, no en la fecha de pago.</span></span>
+      </div>
+    </form>
+  </div>
+
+  <!-- ===================== TAB 2: SEGUIMIENTO ===================== -->
+  <div class="page" id="page-2">
+    <div class="card">
+      <div class="card-title">Seguimiento de solicitud</div>
+      <p class="card-desc">Consulta el estado de un pedido especial por número de folio o teléfono de contacto.</p>
+
+      <form class="track-search" onsubmit="return handleTrackSearch(event)">
+        <input class="field-input" type="text" placeholder="Folio (ej. PED-DQ-2026-0075) o teléfono">
+        <button type="submit">Buscar</button>
+      </form>
+      <button class="track-example" type="button" onclick="showTrackExample()">Ver ejemplo de seguimiento →</button>
+
+      <div class="dash-list" id="track-results">
+        <div class="dash-item">
+          <div class="dash-item-left">
+            <div class="dash-tag">Pastel</div>
+            <div class="dash-item-text">
+              <div class="dash-item-title">Pastel de Oreo — Sucursal Altamira</div>
+              <div class="dash-item-meta">Folio PED-DQ-2026-0075 · Entrega 5 sept 2026</div>
+            </div>
+          </div>
+          <span class="status-badge status-confirmada">Confirmado</span>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-left">
+            <div class="dash-tag">Anticipado</div>
+            <div class="dash-item-text">
+              <div class="dash-item-title">Pedido anticipado — Sucursal Madero</div>
+              <div class="dash-item-meta">Folio PED-DQ-2026-0071 · Pago total, entrega diferida</div>
+            </div>
+          </div>
+          <span class="status-badge status-diferido">Inventario diferido</span>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-left">
+            <div class="dash-tag">Pastel</div>
+            <div class="dash-item-text">
+              <div class="dash-item-title">Pastel M&M's — Sucursal Centro</div>
+              <div class="dash-item-meta">Folio PED-DQ-2026-0069 · Entregado 28 ago 2026</div>
+            </div>
+          </div>
+          <span class="status-badge status-entregada">Entregado</span>
+        </div>
+        <div class="dash-item">
+          <div class="dash-item-left">
+            <div class="dash-tag">Pastel</div>
+            <div class="dash-item-text">
+              <div class="dash-item-title">Pastel personalizado — Sucursal Norte</div>
+              <div class="dash-item-meta">Folio PED-DQ-2026-0080 · Anticipo pendiente</div>
+            </div>
+          </div>
+          <span class="status-badge status-anticipo">Anticipo recibido</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== MODAL: CONFIRMACIÓN POR CORREO (demo, no envía nada) ===================== -->
+<div class="confirm-overlay" id="confirm-overlay" onclick="if(event.target===this) closeConfirmModal()">
+  <div class="confirm-modal">
+    <button type="button" class="confirm-close" onclick="closeConfirmModal()">✕</button>
+    <img src="DQ_Logo_3.png" alt="Dairy Queen" class="confirm-icon">
+    <h3 id="confirm-modal-title">¡Confirmación enviada!</h3>
+    <p id="confirm-modal-text">Hemos enviado a tu correo la confirmación de todo lo reservado.</p>
+    <div class="confirm-summary" id="confirm-summary"></div>
+    <button type="button" class="btn-primary" style="margin-top:0;" onclick="closeConfirmModal()">Entendido</button>
+  </div>
+</div>
+
+<footer style="border-top:1px solid var(--line); padding:24px 40px; text-align:center;">
+  <span style="font-size:11.5px; color:var(--ink-faint); font-weight:600;">Propuesta de diseño front end — Punto Kuale · Sin conexión a Odoo todavía</span>
+</footer>
+
+<script>
+const sucursalesSinPastel = ['Altama'];
+
+function handleSucursalChange(sucursal) {
+  const optPastel = document.getElementById('opt-pastel');
+  const tipoSelect = document.getElementById('pedido-tipo');
+  const bloqueada = sucursalesSinPastel.includes(sucursal);
+
+  optPastel.disabled = bloqueada;
+
+  if (bloqueada && tipoSelect.value === 'Pastel') {
+    tipoSelect.value = '';
+  }
+}
+
+function setRole(role) {
+  document.getElementById('role-invitado').classList.toggle('active', role === 'invitado');
+  document.getElementById('role-guia').classList.toggle('active', role === 'guia');
+  const hint = document.getElementById('guia-hint');
+  hint.textContent = role === 'guia'
+    ? 'Modo guía: estás capturando este pedido en nombre del invitado en mostrador o por teléfono.'
+    : 'Aplica si el invitado llega directamente a tienda o solicita el pedido por teléfono. La guía puede completar este formulario en su nombre.';
+}
+
+function showTab(n) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + n).classList.add('active');
+  document.getElementById('tabbtn-' + n).classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function setTipoPago(tipo) {
+  document.getElementById('pago-total-btn').classList.toggle('selected', tipo === 'total');
+  document.getElementById('pago-anticipo-btn').classList.toggle('selected', tipo === 'anticipo');
+  document.getElementById('pedido-total-flow').style.display = tipo === 'total' ? 'block' : 'none';
+  document.getElementById('pedido-anticipo-flow').style.display = tipo === 'anticipo' ? 'block' : 'none';
+  document.getElementById('pedido-anticipo-monto').required = tipo === 'anticipo';
+}
+
+function updateFileName(input) {
+  const span = input.closest('.file-field').querySelector('.file-field-name');
+  span.textContent = input.files.length ? input.files[0].name : span.dataset.default;
+}
+
+function openConfirmModal(mensaje, rows) {
+  document.getElementById('confirm-modal-text').textContent = mensaje;
+  const summary = document.getElementById('confirm-summary');
+  summary.innerHTML = (rows || []).map(([label, value]) =>
+    `<div class="cs-row"><span class="cs-label">${label}</span><span class="cs-value">${value || '—'}</span></div>`
+  ).join('');
+  document.getElementById('confirm-overlay').classList.add('active');
+}
+
+function closeConfirmModal() {
+  document.getElementById('confirm-overlay').classList.remove('active');
+}
+
+let pedidoFolioCounter = 80;
+function handleSubmitPedido(evt) {
+  evt.preventDefault();
+  pedidoFolioCounter++;
+  const folio = 'PED-DQ-2026-' + String(pedidoFolioCounter).padStart(4,'0');
+  document.getElementById('folio-pedido').textContent = 'Folio: ' + folio;
+  const toast = document.getElementById('toast-pedido');
+  toast.style.display = 'flex';
+  toast.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+  const esAnticipo = document.getElementById('pago-anticipo-btn').classList.contains('selected');
+  const correo = document.getElementById('pedido-correo').value;
+  const rows = [
+    ['Folio', folio],
+    ['Sucursal', document.getElementById('pedido-sucursal').value],
+    ['Tipo de pedido', document.getElementById('pedido-tipo').value],
+    ['Cantidad', document.getElementById('pedido-cantidad').value],
+    ['Fecha de entrega', document.getElementById('pedido-fecha-entrega').value],
+    ['Nombre de contacto', document.getElementById('pedido-nombre').value],
+    ['Teléfono', document.getElementById('pedido-telefono').value],
+    ['Tipo de pago', esAnticipo ? 'Anticipo' : 'Pago total'],
+  ];
+  if (esAnticipo) {
+    rows.push(['Monto del anticipo', document.getElementById('pedido-anticipo-monto').value]);
+    rows.push(['Forma de pago', document.getElementById('pedido-forma-pago').value]);
+  }
+  rows.push(['Correo', correo]);
+  openConfirmModal('Hemos enviado a ' + correo + ' la confirmación de tu pedido especial:', rows);
+  return false;
+}
+
+function handleTrackSearch(evt) {
+  evt.preventDefault();
+  showTrackExample();
+  return false;
+}
+function showTrackExample() {
+  document.getElementById('track-results').classList.add('active');
+}
+</script>
+</body>
+</html>
